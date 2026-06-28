@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Polygon Convex or Concave Quiz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Floating animated background shapes -->
+  <div class="floating-bg" aria-hidden="true">
+    <svg class="float s1" viewBox="0 0 200 200"><polygon points="100,10 160,60 140,130 60,130 40,60" fill="var(--mint)"/></svg>
+    <svg class="float s2" viewBox="0 0 200 200"><polygon points="30,30 170,30 170,170 30,170" fill="var(--sun)" /></svg>
+    <svg class="float s3" viewBox="0 0 200 200"><polygon points="100,20 140,60 120,120 80,120 60,60" fill="var(--lav)" /></svg>
+    <svg class="float s4" viewBox="0 0 200 200"><polygon points="40,60 80,40 120,30 160,60 140,90 120,120 80,130 40,120" fill="var(--coral)" /></svg>
+    <svg class="float s5" viewBox="0 0 200 200"><polygon points="50,30 150,30 170,90 100,160 30,90" fill="var(--mint)" /></svg>
+  </div>
+
+  <div class="app card" id="app" role="application">
+    <header>
+      <div>
+        <h1>Polygon Quiz — Convex or Concave</h1>
+        <div class="muted">Decide whether each polygon is convex or concave</div>
+      </div>
+      <div class="controls">
+        <div class="muted-compact">All plays are stored locally for every student</div>
+      </div>
+    </header>
+
+    <!-- Start Screen -->
+    <div id="start" class="start-screen card">
+      <div class="start-big">
+        <div class="start-left">
+          <div class="big-title">Ready to test polygon shapes?</div>
+          <div class="start-note">Enter your name and press Start. Each game shows 10 questions chosen from 40 connected polygon shapes. Shapes won't repeat until all 40 have been used.</div>
+          <div style="height:18px"></div>
+
+          <label class="small" for="playerName">Player name</label>
+          <input type="text" id="playerName" placeholder="Your name" aria-label="Player name" />
+
+          <div style="height:12px"></div>
+          <div style="display:flex; gap:12px;">
+            <button id="startBtn" class="wide-btn">Start Game</button>
+            <button id="resetUsed" class="alt-btn">Reset Used Shapes</button>
+          </div>
+        </div>
+
+        <aside class="start-right">
+          <div class="card leaderboard" style="padding:12px;">
+            <div class="leaderboard-header">
+              <div style="font-weight:800">Leaderboard (All plays)</div>
+              <button id="clearBoard" class="clear-btn">Clear</button>
+            </div>
+            <table id="boardTable" style="margin-top:8px">
+              <thead><tr><th>Player</th><th>Score</th><th>Time (s)</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game" style="display:none">
+      <div class="game-area">
+        <div>
+          <div class="shape-card card">
+            <div class="top-row">
+              <div>
+                <div class="small">Player</div>
+                <div id="playerLabel" class="player-name"></div>
+              </div>
+              <div style="text-align:right">
+                <div class="small">Progress</div>
+                <div id="progressLabel" class="progress-label">0 / 10</div>
+              </div>
+            </div>
+
+            <div class="svg-wrap" id="svgWrap" aria-live="polite"></div>
+
+            <div class="controls-row">
+              <div class="timer" id="timerWrap" title="Time left">
+                <svg viewBox="0 0 100 100" width="100" height="100">
+                  <defs>
+                    <linearGradient id="g1"><stop offset="0%" stop-color="var(--mint)"/><stop offset="100%" stop-color="var(--lav)"/></linearGradient>
+                  </defs>
+                  <circle cx="50" cy="50" r="44" stroke="rgba(255,255,255,0.06)" stroke-width="12" fill="none"></circle>
+                  <circle id="timerCircle" cx="50" cy="50" r="44" stroke="url(#g1)" stroke-width="12" stroke-linecap="round" fill="none" stroke-dasharray="276.46" stroke-dashoffset="0"></circle>
+                </svg>
+                <div class="time-num" id="timeNum">5</div>
+              </div>
+
+              <div style="flex:1">
+                <div class="btn-row">
+                  <button class="choice convex" id="btnConvex">Convex</button>
+                  <button class="choice concave" id="btnConcave">Concave</button>
+                </div>
+                <div style="margin-top:8px">
+                  <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="result" id="resultRow" style="display:none">
+              <div id="resultText" style="font-weight:800"></div>
+              <div id="resultBadge"></div>
+            </div>
+          </div>
+
+          <div class="game-actions">
+            <button id="nextBtn" style="display:none">Next</button>
+            <button id="quitBtn" class="alt-btn">Quit</button>
+          </div>
+        </div>
+
+        <aside class="meta">
+          <div class="card stats">
+            <div class="row"><div class="small">Score</div><div id="scoreLabel" class="stat-value">0</div></div>
+            <div class="row"><div class="small">Time used (s)</div><div id="timeLabel" class="stat-value">0.0</div></div>
+            <div class="row"><div class="small">Current streak</div><div id="streakLabel" class="stat-value">0</div></div>
+          </div>
+
+          <div class="card leaderboard">
+            <div class="leaderboard-header">
+              <div style="font-weight:800">Leaderboard (All plays)</div>
+              <div style="color:var(--muted); font-size:13px">Stored locally</div>
+            </div>
+            <table id="boardTableGame" style="margin-top:8px">
+              <thead><tr><th>Player</th><th>Score</th><th>Time (s)</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="card tracker-card">
+            <div class="small">Question tracker</div>
+            <div id="trackerDots" class="tracker-dots"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <footer class="muted">Built for quick practice — all plays are stored locally in your browser.</footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
